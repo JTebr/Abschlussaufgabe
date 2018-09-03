@@ -1,0 +1,87 @@
+// Geosoftware I Abschlussaufgabe Jan Tebrügge
+// page with included map and functions to save in the database
+// developed with Bootstrap (bootstrap classes)
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title Geosoftware I - Abschlussaufgabe
+    // Leaflet CSS Source:https://leafletjs.com/examples/quick-start/
+    link(rel='stylesheet', href='https://unpkg.com/leaflet@1.3.1/dist/leaflet.css', integrity='sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==', crossorigin='')
+    // Leaflet JavaScript file Source:https://leafletjs.com/examples/quick-start/
+    script(src='https://unpkg.com/leaflet@1.3.1/dist/leaflet.js', integrity='sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==', crossorigin='')
+    // Source:https://leafletjs.com/examples/mobile/
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+    // Latest compiled and minified CSS
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+    // jQuery library
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    // Latest compiled JavaScript
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    // jQuery
+    script(src='/javascripts/jquery.js')
+    script(src='/javascripts/jquery-ui.js')
+    script(src='/javascripts/jquery-ui.min.js')
+    link(href='/stylesheets/jquery-ui.min.css', rel='stylesheet')
+    // link to tylesheet
+    link(href='/stylesheets/style.css', rel='stylesheet')
+    // js file and css script for the data upload with ajax
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.js')
+    // imports the fileSaver.js script
+    script(src='https://cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js')
+    // Leaflet routing Engine
+    link(rel='stylesheet', href='/stylesheets/leaflet-routing-machine.css')
+    script(src='/javascripts/leaflet-routing-machine.js')
+    // Leaflet Reverse Lookup
+    link(rel='stylesheet', href='/stylesheets/Control.Geocoder.css')
+    script(src='/javascripts/Control.Geocoder.js')
+
+  body
+    // creating the bootstrap navbar
+    nav.navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          a.navbar-brand(href='/') WWU Geoplaner
+        ul.nav.navbar-nav
+          li.active
+            a(href='/') Startseite
+          li
+            a(href='karte') Karte
+          li
+            a(href='impressum') Impressum
+    // bootstrap class for heading
+    .jumbotron.text-center
+      h1 Karte
+      h3
+    // bootstrap container with columns (grid)
+    .container
+      .col-lg-6.resizable1
+        // creating the mapspace
+        #map
+        // invoking the file with the map data
+        script(src='/javascripts/map.js')
+      .col-lg-6.resizable2
+        div
+            p.
+              Draw something in the Map, then press the Button "Load Drawing!":
+            //button to set the GeoJSON as the value of the hidden input field
+            button(type='button', onclick='StringGeoJSON()') Load Drawing!
+            br
+            br
+            p.
+              Now give your drawing a name and save it with a click on the appropriate button to the database:
+            //form with action = addgeo and method = post, reference to index.js, in which it is defined what happend when the button is clicked
+            form#formAddGeo(name="addgeo",method="post",action="/addgeo")
+              input#inputFileName(type="text", placeholder="filename", name="filename")
+              input#inputGeoObject(type="hidden", name ="geo", value="")
+              button#btnSubmit(type="submit") Save in Database!
+            br
+            br
+            p.
+              We are working on a simpler way of functionality!
+    // Link to splitter.js Scriptfile
+    script(src='/javascripts/splitter.js')
+    // bootstrap footer class
+    footer
+      .footer-copyright.text-center.py-3 Geosoftware I - Abschlussaufgabe - Jan Tebrügge

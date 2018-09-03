@@ -1,0 +1,92 @@
+
+/*personal style settings*/		
+
+body{
+	font-family: Arial;}
+
+#map {
+	margin: 1em auto;
+	height:450px;
+	width: 100%;}
+
+.btn{
+	background-color: #000000;
+	border: none;}
+
+.navbar{
+	background-color: #0ca911;}
+			
+.jumbotron {
+	background-color: #000000
+;
+	padding-top: 15px;
+	color: #FFFFFF;
+	height: 150px;}
+			
+#imprint{
+	background-color: #FBEFF2;
+	padding: 20px;}
+
+#index1{
+	background-color: #FBEFF2;
+	height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;}
+	
+.footer-copyright{
+	background-color: #blue;
+	height: 65px;
+	margin-top: 25px;
+	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;}	
+
+/*style settings for resizing the columns*/			
+/*see: https://codepen.io/xmaster/pen/swJBe*/
+
+body, html {
+	padding:0;margin:0;height:100%;}
+
+.wrap {
+    width: 100%;
+    float:left;
+    overflow:hidden;
+    height:100%;}
+
+.resizable {
+    width: 50%;
+    height:100%;
+    padding: 0;
+    display: block;
+    float:left;
+    color:#000;
+    position:relative; }
+
+.resizable .inner {
+	padding:30px;
+    overflow:hidden;
+    overflow-y:auto;
+    position:absolute; 
+    height:100%;
+    top:0;
+    left:0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;}
+	
+.resizable1 .inner {
+	margin-right:1px;}
+	
+.resizable2 .inner {
+	margin-left:1px;}
+
+.ui-resizable-e { 
+    cursor: e-resize; 
+    display:block!important;
+    width: 2px; 
+    right: -7px; 
+    top: 0; 
+    bottom: 0; 
+    background: #333;}

@@ -1,0 +1,52 @@
+// // Geosoftware I Abschlussaufgabe Jan Tebrügge
+// imprint
+// developed with Bootstrap (bootstrap classes)
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title Geosoftware I - Abschlussaufgabe
+    // Leaflet CSS Source:https://leafletjs.com/examples/quick-start/
+    link(rel='stylesheet', href='https://unpkg.com/leaflet@1.3.1/dist/leaflet.css', integrity='sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==', crossorigin='')
+    // Leaflet JavaScript file Source:https://leafletjs.com/examples/quick-start/
+    script(src='https://unpkg.com/leaflet@1.3.1/dist/leaflet.js', integrity='sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==', crossorigin='')
+    // Source:https://leafletjs.com/examples/mobile/
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+    // Latest compiled and minified CSS
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+    // jQuery library
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    // Latest compiled JavaScript
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    // Link to personal stylesheet
+    link(href='/stylesheets/style.css', rel='stylesheet')
+  body
+    // creating the bootstrap navbar
+    nav.navbar.navbar-default
+      .container-fluid
+        .navbar-header
+          a.navbar-brand(href='/') WWU Geoplaner
+        ul.nav.navbar-nav
+         li.active
+           a(href='/') Startseite
+         li
+           a(href='karte') Karte
+         li
+           a(href='impressum') Impressum
+    // bootstrap class for heading
+    .jumbotron.text-center
+      h1 Impressum
+    // bootstrap container with columns (grid)
+    .container-fluid
+              #imprint.col-lg-12
+                p
+                  | Westfälische Wilhelms-Universität Münster
+                  br
+                  | 		Institute of Geography
+                  br
+                  | 		Heisenberstraße 2, 48149 Münster
+                  br
+                  | 		Jan Tebrügge
+    // bootstrap footer class
+    footer
+      .footer-copyright.text-center.py-3 Geosoftware I - Abschlussaufgabe - Jan Tebrügge
