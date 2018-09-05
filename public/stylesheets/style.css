@@ -5,12 +5,11 @@ body{
 	font-family: Arial;}
 
 #map {
-	margin: 1em auto;
-	height:450px;
-	width: 100%;}
+    height: 80vh;
+}
 
 .btn{
-	background-color: #000000;
+	background-color: #808080;
 	border: none;}
 
 .navbar{
@@ -19,16 +18,15 @@ body{
 .jumbotron {
 	background-color: #000000
 ;
-	padding-top: 15px;
+	padding-top: 10px;
 	color: #FFFFFF;
 	height: 150px;}
 			
 #imprint{
-	background-color: #FBEFF2;
+
 	padding: 20px;}
 
 #index1{
-	background-color: #FBEFF2;
 	height: 200px;
 	display: flex;
 	align-items: center;

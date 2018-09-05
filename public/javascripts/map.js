@@ -123,6 +123,281 @@ map.on(L.Draw.Event.CREATED, function(e) {
 });
 
 /**
+ * load external GeoJSON file via Ajax (Caution! Server to load from has to allow cross origin requests!)
+ */
+function showExternalFile() {
+    $.get(document.getElementById('externalfile').value, function(response) {
+        L.geoJSON(JSON.parse(response)).addTo(map);
+    });
+}
+
+/**
+ * provide the objects drawn using the Leaflet.draw plugin as a GeoJSON to download
+ */
+function exportDrawing() {
+    // fake a link
+    var anchor = document.createElement('a');
+    // encode geojson as the link's contents
+    anchor.href = 'data:application/vnd.geo+json,' + encodeURIComponent(JSON.stringify(editableLayers.toGeoJSON()));
+    anchor.target = '_blank';
+    // give it a nice file name
+    anchor.download = "your-drawing.geojson";
+    // add to document (Firefox needs that)
+    document.body.appendChild(anchor);
+    // fake a click on the link -> file will be offered for download
+    anchor.click();
+    // remove that element again as if nothing happened
+    document.body.removeChild(anchor);
+}
+
+/**
+ * add resizing capability (curtesy of several StackExchange users)
+ */
+function initUI() {
+    var resize= $("#content");
+    var containerWidth = $("body").width();
+
+    $(resize).resizable({
+        handles: 'e',
+        /*maxWidth: 450,
+        minWidth: 120,*/
+        classes: { "ui-resizable-handle": "hidden-xs hidden-sm" },
+        resize: function(event, ui){
+            var currentWidth = ui.size.width;
+
+            // this accounts for padding in the panels +
+            // borders, you could calculate this using jQuery
+            var padding = 12;
+
+            // this accounts for some lag in the ui.size value, if you take this away
+            // you'll get some instable behaviour
+            $(this).width(containerWidth - currentWidth - padding);
+
+            // set the content panel width
+            $("#content").width(currentWidth);
+        }
+    });
+}
+
+// Overwrite HTML Form handlers once document is created.
+$(document).ready(function() {
+
+    // overwrite submit handler for form used to save to Database
+    $('#saveFormGeo').submit(function(e) {
+        e.preventDefault();
+        // Append hidden field with actual GeoJSON structure
+        var inputGeo = $('<input type="hidden" name="geometry" value=' + JSON.stringify(editableLayers.toGeoJSON())+ '>');
+        $(this).append(inputGeo);
+        var that = this;
+        // submit via ajax
+        $.ajax({
+            data: $(that).serialize(),
+            type: $(that).attr('method'),
+            url:  $(that).attr('action'),
+            error: function(xhr, status, err) {
+                console.log("Error while saving Geometry to Database");
+                alert("Error while saving Geometry to Database");
+            },
+            success: function(res) {
+                console.log("Geometry with the name '" + that.elements.name.value + "' saved to Database.");
+            }
+        });
+        inputGeo.remove();
+        return false;
+    });
+    // submit handler for forms used to load from Database
+    $('#loadFormGeo').submit(function(e) {
+        // Prevent default html form handling
+        e.preventDefault();
+
+        var that = this;
+
+        // submit via ajax
+        $.ajax({
+            // catch custom response code.
+            statusCode: {
+                404: function() {
+                    alert("Geometry with the name '" + that.elements.loadname.value + "' is not present in the Database.");
+                }
+            },
+            data: '',
+            type: $(that).attr('method'),
+            // Dynamically create Request URL by appending requested name to /api prefix
+            url:  $(that).attr('action') + that.elements.loadname.value,
+            error: function(xhr, status, err) {
+            },
+            success: function(res) {
+                console.log("success");
+                // Add Geometry to Map
+                L.geoJSON(JSON.parse(res[0].geometry)).addTo(map);
+                alert("Geometry '" + that.elements.loadname.value + "' successfully loaded.");
+            }
+        });
+        return false;
+    });
+    // overwrite submit handler for form used to save to Database
+    $('#saveFormRoutes').submit(function(e) {
+        e.preventDefault();
+        if (currentRoute){
+            // Append hidden field with actual GeoJSON structure
+            var inputRoute = $("<input type='hidden' name='route' value='" + JSON.stringify(currentRoute) + "'>");
+            $(this).append(inputRoute);
+            var that = this;
+
+            // submit via ajax
+            $.ajax({
+                data: $(that).serialize(),
+                type: $(that).attr('method'),
+                url:  $(that).attr('action'),
+                error: function(xhr, status, err) {
+                    console.log("Error while saving Route to Database");
+                },
+                success: function(res) {
+                    console.log("Route with the name '" + that.elements.name.value + "' saved to Database.");
+                }
+            });
+            inputRoute.remove();
+            return false;
+        }
+    });
+    // submit handler for forms used to load from Database
+    $('#loadFormRoutes').submit(function(e) {
+        // Prevent default html form handling
+        e.preventDefault();
+        var that = this;
+
+        // submit via ajax
+        $.ajax({
+            // catch custom response code.
+            statusCode: {
+                404: function() {
+                    alert("Route with the name '" + that.elements.loadname.value + "' is not present in the Database.");
+                }
+            },
+            data: '',
+            type: $(that).attr('method'),
+            // Dynamically create Request URL by appending requested name to /api prefix
+            url:  $(that).attr('action') + that.elements.loadname.value,
+            error: function(xhr, status, err) {
+            },
+            success: function(res) {
+                var route = JSON.parse(res[0].route);
+                routeControl.setWaypoints(route.waypoints).addTo(map);
+                console.log("Route '" + that.elements.loadname.value + "' successfully loaded.");
+            }
+        });
+        return false;
+    });
+
+    // submit handler for forms used to load from Database
+    $('#loadFormRoutesVisualization').submit(function(e) {
+        // Prevent default html form handling
+        e.preventDefault();
+        var that = this;
+
+        // submit via ajax
+        $.ajax({
+            // catch custom response code.
+            statusCode: {
+                404: function() {
+                    alert("Route with the name '" + that.elements.loadname.value + "' is not present in the Database.");
+                }
+            },
+            data: '',
+            type: $(that).attr('method'),
+            // Dynamically create Request URL by appending requested name to /api prefix
+            url:  $(that).attr('action') + that.elements.loadname.value,
+            error: function(xhr, status, err) {
+            },
+            success: function(res) {
+                var route = JSON.parse(res[0].route);
+                console.log(res[0].route);
+                L.geoJSON(RouteToGeoJSON(route.route)).addTo(visualizationLayers);
+                console.log("Route '" + that.elements.loadname.value + "' successfully visualized.");
+            }
+        });
+        return false;
+    });
+
+    if ((document.getElementById('loadname')).value != ""){
+        document.getElementById('loadRoutes').click();
+    }
+});
+
+
+// Credit to https://github.com/perliedman/leaflet-routing-machine/blob/344ff09c8bb94d4e42fa583286d95396d8227c65/src/L.Routing.js
+function RouteToGeoJSON(route){
+    var wpNames = [],
+        wpCoordinates = [],
+        i,
+        wp,
+        latLng;
+
+    for (i = 0; i < route.waypoints.length; i++) {
+        wp = route.waypoints[i];
+        latLng = L.latLng(wp.latLng);
+        wpNames.push(wp.name);
+        wpCoordinates.push([latLng.lng, latLng.lat]);
+    }
+    return {
+        type: 'FeatureCollection',
+        features: [
+            {
+                type: 'Feature',
+                properties: {
+                    id: 'waypoints',
+                    names: wpNames
+                },
+                geometry: {
+                    type: 'MultiPoint',
+                    coordinates: wpCoordinates
+                }
+            },
+            {
+                type: 'Feature',
+                properties: {
+                    id: 'line',
+                },
+                geometry: routeToLineString(route)
+            }
+        ]
+    };
+}
+
+// Credits to https://github.com/perliedman/leaflet-routing-machine/blob/344ff09c8bb94d4e42fa583286d95396d8227c65/src/L.Routing.js
+function routeToLineString(route) {
+    var lineCoordinates = [],
+        i,
+        latLng;
+
+    for (i = 0; i < route.coordinates.length; i++) {
+        latLng = L.latLng(route.coordinates[i]);
+        lineCoordinates.push([latLng.lng, latLng.lat]);
+    }
+
+    return {
+        type: 'LineString',
+        coordinates: lineCoordinates
+    };
+}
+
+
+// Code taken from http://www.liedman.net/leaflet-routing-machine/tutorials/interaction/
+function createButton(label, container) {
+    var btn = L.DomUtil.create('button', '', container);
+    btn.setAttribute('type', 'button');
+    btn.innerHTML = label;
+    return btn;
+}
+function clearVisualizationLayer() {
+    visualizationLayers.clearLayers();
+}
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    initMap();
+    initUI();
+});
+/**
  * @see https://github.com/eligrey/FileSaver.js/wiki/FileSaver.js-Example
  * @desc saves a file using FileSaver.js
  */
@@ -192,12 +467,6 @@ function onLocationError(e) {
 
 map.on('locationerror', onLocationError);
 
-// creating a permanent marker with popup and picture
-var popupcont = {
-    "Domplatz": "Here is the Domplatz of Münster: <img src= images/Domplatz.jpg height=200 width= 200>"
-}
-var marker = L.marker([51.962518, 7.625911]).addTo(map);
-marker.bindPopup(popupcont["Domplatz"]).openPopup();
 
 /**
  * @desc ajax function for form's action

@@ -50,10 +50,7 @@ html(lang='en')
             a(href='karte') Karte
           li
             a(href='impressum') Impressum
-    // bootstrap class for heading
-    .jumbotron.text-center
-      h1 Karte
-      h3
+
     // bootstrap container with columns (grid)
     .container
       .col-lg-6.resizable1
@@ -62,24 +59,35 @@ html(lang='en')
         // invoking the file with the map data
         script(src='/javascripts/map.js')
       .col-lg-6.resizable2
-        div
-            p.
-              Draw something in the Map, then press the Button "Load Drawing!":
-            //button to set the GeoJSON as the value of the hidden input field
-            button(type='button', onclick='StringGeoJSON()') Load Drawing!
-            br
-            br
-            p.
-              Now give your drawing a name and save it with a click on the appropriate button to the database:
-            //form with action = addgeo and method = post, reference to index.js, in which it is defined what happend when the button is clicked
-            form#formAddGeo(name="addgeo",method="post",action="/addgeo")
-              input#inputFileName(type="text", placeholder="filename", name="filename")
-              input#inputGeoObject(type="hidden", name ="geo", value="")
-              button#btnSubmit(type="submit") Save in Database!
-            br
-            br
-            p.
-              We are working on a simpler way of functionality!
+
+        form.form-inline(onsubmit='event.preventDefault(); showExternalFile();')
+          input#externalfile.form-control(type='text', name='externalfile', placeholder='URL zu ext. GeoJSON-Datei')
+          input.btn.btn-default(type='submit', value='Auf Karte laden')
+        br
+        form.form-inline(id='saveFormGeo' action='/index/save/geometry/' method='POST')
+          input#name.form-control(type='text', name='name', placeholder='Name der Geometrie')
+          input.btn.btn-default(type='submit', value='Geometrie in Datenbank speichern')
+        br
+        form.form-inline(id='loadFormGeo' action='/index/load/geometry/' method='GET')
+          input#name.form-control(type='text', name='loadname', placeholder='Name der Geometrie')
+          input.btn.btn-default(type='submit', value='Geometrie aus Datenbank laden')
+        br
+        form.form-inline(id='saveFormRoutes' action='/index/save/route/' method='POST')
+          input#name.form-control(type='text', name='nameroute', placeholder='Name der Route')
+          input.btn.btn-default(type='submit', value='Route in Datenbank speichern')
+        br
+        form.form-inline(id='loadFormRoutes' name='loadFormRoutes' action='/index/load/route/' method='GET')
+          input.form-control(type='text', name='loadname', id='loadname', value=loadRouteName, placeholder='Name der Route')
+          input.btn.btn-default(type='submit', id='loadRoutes', value='Route aus Datenbank laden')
+        br
+        form.form-inline(id='loadFormRoutesVisualization' action='/index/load/route/' method='GET')
+          input#name.form-control(type='text', name='loadname', placeholder='Name der Route')
+          input.btn.btn-default(type='submit', value='Zeige Route an')
+        br
+        button.btn.btn-default(onclick='clearVisualizationLayer()') Entferne sichtbare Routen
+        br
+        br
+        button.btn.btn-default(onclick='showLocation()') Meine Position anzeigen
     // Link to splitter.js Scriptfile
     script(src='/javascripts/splitter.js')
     // bootstrap footer class
